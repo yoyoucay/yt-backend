@@ -4,19 +4,16 @@ import { exec } from "child_process";
 const app = express();
 
 app.get("/", (req, res) => {
-  res.send("Backend is running");
+  res.send("Backend running");
 });
 
 app.get("/test-ytdlp", (req, res) => {
-  exec("yt-dlp --version", (err, stdout, stderr) => {
-    if (err) {
-      return res.status(500).send(stderr || err.message);
-    }
+  exec("yt-dlp --version", (err, stdout) => {
+    if (err) return res.status(500).send(err.message);
     res.send(stdout);
   });
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log("Server running on port", PORT);
+app.listen(3000, () => {
+  console.log("Backend running on port 3000");
 });
