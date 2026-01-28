@@ -8,9 +8,8 @@ node_modules/
 logs/
 *.log
 npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
 
-
-#Files downloads
+# Downloaded files (temporary)
 downloads/
+*.mp3
+*.mp4

@@ -16,6 +16,19 @@ const downloadsDir = path.join(__dirname, 'downloads');
 if (!fs.existsSync(downloadsDir)) {
   fs.mkdirSync(downloadsDir, { recursive: true });
   logger.info('Created downloads directory');
+} else {
+  // Clean up any leftover files from previous runs
+  const files = fs.readdirSync(downloadsDir);
+  files.forEach(file => {
+    const filePath = path.join(downloadsDir, file);
+    try {
+      fs.unlinkSync(filePath);
+      logger.info({ file }, 'Cleaned up leftover file');
+    } catch (error) {
+      logger.error({ file, error: error.message }, 'Failed to clean up file');
+    }
+  });
+  logger.info('Cleaned downloads directory');
 }
 
 // Middleware
