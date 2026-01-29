@@ -8,9 +8,6 @@ class YtDlpService {
     return userAgents[Math.floor(Math.random() * userAgents.length)];
   }
 
-  /**
-   * Get video info using yt-dlp --dump-json
-   */
   async getVideoInfo(url) {
     return new Promise((resolve, reject) => {
       const args = [
@@ -78,6 +75,25 @@ class YtDlpService {
       });
     }
 
+    // Add common fallback formats if none found or limited options
+    const defaultVideoFormats = ['360p', '480p', '720p', '1080p'];
+    const defaultAudioFormats = ['128kbps', '192kbps', '256kbps', '320kbps'];
+
+    // If no video formats found or only one, add defaults
+    if (videoFormats.size === 0) {
+      defaultVideoFormats.forEach(f => videoFormats.add(f));
+    } else if (videoFormats.size < 3) {
+      // Add additional common formats as fallbacks
+      defaultVideoFormats.forEach(f => videoFormats.add(f));
+    }
+
+    // If no audio formats found or limited, add defaults
+    if (audioFormats.size === 0) {
+      defaultAudioFormats.forEach(f => audioFormats.add(f));
+    } else if (audioFormats.size < 3) {
+      defaultAudioFormats.forEach(f => audioFormats.add(f));
+    }
+
     return {
       id: info.id,
       title: info.title,
@@ -103,9 +119,6 @@ class YtDlpService {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   }
 
-  /**
-   * Download video/audio with progress tracking
-   */
   async download(url, format, quality, outputPath, onProgress) {
     let retries = 0;
     const maxRetries = config.YTDLP.MAX_RETRIES;
